@@ -1,3 +1,4 @@
+import hangman_stages
 word="apple"
 
 
@@ -47,6 +48,7 @@ while (points!=0 and "_" in blanks):
         print(points)
         
     print(blanks)
+    print(hangman_stages.stages[points])
 
 
 
