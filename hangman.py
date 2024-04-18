@@ -1,57 +1,49 @@
 import hangman_stages
-word="apple"
+import random
 
+class HangmanGame:
+    def __init__(self, word):
+        self.word = word
+        self.blanks = ["_"] * len(word)
+        self.points = 6
+        self.guessed_letters = []
 
-flag=0
-points=6
-blanks=["_","_","_","_","_"]
+    @staticmethod
+    def choose_word():
+        word_list = ["apple", "banana", "cherry", "orange", "grape", "kiwi", "melon", "peach","car","light","motion","key"]
+        return random.choice(word_list)
 
-pos=[]
-while (points!=0 and "_" in blanks):
-    print(word)
-    letter=input("guess a letter")
-    
-    if letter in word:
-      
-        if word.count(letter)>1:
-            k=0
-            l=0
-            
-            if flag==0:
-                counts=word.count(letter)
-                flag=1
-                
-                for i in range (0,counts):
-                    posi=word.index(letter,k+l)
-                    pos.append(posi)
-                    k=posi
-                    l=1  
-            for i in pos:
-                blanks.pop(i)
-                blanks.insert(i,letter)
-                pos.remove(i)
-                word= word.replace(letter,"_",i)
+    def guess(self, letter):
+        if letter in self.guessed_letters:
+            print("You've already guessed that letter.")
+            return
 
-                break
-                
+        self.guessed_letters.append(letter)
+
+        if letter in self.word:
+            for i, char in enumerate(self.word):
+                if char == letter:
+                    self.blanks[i] = letter
+            if "_" not in self.blanks:
+                print("Congratulations! You've guessed the word:", ''.join(self.blanks))
+                return "win"
         else:
-            po=word.index(letter)
-            blanks.pop(po)
-            blanks.insert(po,letter)
-            word=word.replace(letter,"_")
-            
-            
-        
-    else:
-       
-        points-=1
-        print(points)
-        
-    print(blanks)
-    print(hangman_stages.stages[points])
+            self.points -= 1
+            print("Incorrect guess. You have {} points left.".format(self.points))
+            if self.points == 0:
+                print("You've run out of points. The word was:", self.word)
+                return "lose"
 
+    def play(self):
+        while self.points > 0 and "_" in self.blanks:
+            print("Current Status:", ' '.join(self.blanks))
+            letter = input("Guess a letter: ").lower()
+            result = self.guess(letter)
+            if result == "win" or result == "lose":
+                break
+            print(hangman_stages.stages[self.points])
 
-
-
-
-
+# Usage
+word = HangmanGame.choose_word()
+game = HangmanGame(word)
+game.play()
